@@ -355,49 +355,103 @@
             font-weight: 300;
         }
 
-        /* Gallery Section */
+        /* Gallery Section - Premium Design */
         .gallery {
-            background: var(--sand-light);
+            background: var(--cream);
+            padding: 6rem 5% 8rem;
         }
 
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: auto;
             gap: 1.5rem;
             max-width: 1400px;
             margin: 0 auto;
+            padding: 2rem 0;
         }
 
         .gallery-item {
             position: relative;
             overflow: hidden;
-            border-radius: 0;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.5s ease;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             background: var(--white);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, transparent 100%);
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .gallery-item:hover::before {
+            opacity: 1;
         }
 
         .gallery-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12);
         }
 
+        /* Masonry-inspired Layout */
         .gallery-item.wide {
             grid-column: span 12;
+            height: auto;
+        }
+        
+        .gallery-item.wide img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            aspect-ratio: auto;
         }
 
-        .gallery-item.half {
+        .gallery-item.tall {
             grid-column: span 6;
+            aspect-ratio: 4/3;
         }
 
-        .gallery-item.third {
+        .gallery-item.vertical {
             grid-column: span 4;
+            aspect-ratio: 3/4;
         }
 
-        @media (max-width: 768px) {
-            .gallery-item.half,
-            .gallery-item.third {
+        .gallery-item.square {
+            grid-column: span 6;
+            aspect-ratio: 4/3;
+        }
+
+        .gallery-item.small {
+            grid-column: span 3;
+            aspect-ratio: 1/1;
+        }
+
+        @media (max-width: 992px) {
+            .gallery-item.tall,
+            .gallery-item.vertical,
+            .gallery-item.square,
+            .gallery-item.small {
+                grid-column: span 6;
+            }
+            .gallery-item.wide {
+                aspect-ratio: 16/9;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .gallery-item.tall,
+            .gallery-item.vertical,
+            .gallery-item.square,
+            .gallery-item.small {
                 grid-column: span 12;
             }
         }
@@ -406,37 +460,98 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.8s ease;
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .gallery-item:hover img {
-            transform: scale(1.05);
+            transform: scale(1.08);
         }
 
+        /* Premium Gallery Overlay */
         .gallery-overlay {
             position: absolute;
-            bottom: 0;
+            top: 0;
             left: 0;
             right: 0;
-            padding: 2rem;
-            background: linear-gradient(transparent, rgba(44, 62, 80, 0.9));
+            bottom: 0;
+            background: linear-gradient(180deg, 
+                rgba(44, 62, 80, 0.1) 0%, 
+                rgba(44, 62, 80, 0.6) 50%,
+                rgba(44, 62, 80, 0.9) 100%);
             color: white;
-            transform: translateY(100%);
-            transition: transform 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2.5rem;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .gallery-item:hover .gallery-overlay {
-            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .gallery-overlay .project-number {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.15);
+            line-height: 1;
         }
 
         .gallery-overlay h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            transform: translateY(20px);
+            transition: transform 0.5s ease 0.1s;
+        }
+
+        .gallery-item:hover .gallery-overlay h3 {
+            transform: translateY(0);
         }
 
         .gallery-overlay p {
-            font-size: 0.9rem;
-            opacity: 0.9;
+            font-size: 0.95rem;
+            opacity: 0.85;
+            font-weight: 300;
+            line-height: 1.6;
+            transform: translateY(20px);
+            transition: transform 0.5s ease 0.15s;
+        }
+
+        .gallery-item:hover .gallery-overlay p {
+            transform: translateY(0);
+        }
+
+        .gallery-overlay .view-project {
+            margin-top: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            color: #d4af37;
+            text-transform: uppercase;
+            transform: translateY(20px);
+            transition: transform 0.5s ease 0.2s;
+        }
+
+        .gallery-item:hover .gallery-overlay .view-project {
+            transform: translateY(0);
+        }
+
+        .gallery-overlay .view-project::after {
+            content: '→';
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay .view-project::after {
+            transform: translateX(5px);
         }
 
         /* Lightbox */
@@ -571,19 +686,34 @@
             line-height: 1.8;
         }
 
-        /* Contact Section */
+        /* Contact Section - New Color Theme */
         .contact {
-            background: var(--charcoal);
-            color: white;
+            background: #dad2c5;
+            color: #2c3e50;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(218, 165, 32, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(218, 165, 32, 0.05) 0%, transparent 50%);
+            pointer-events: none;
         }
 
         .contact .section-title {
-            color: white;
+            color: #2c3e50;
         }
 
         .contact .section-desc {
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(44, 62, 80, 0.7);
         }
 
         .contact-btn {
@@ -591,20 +721,144 @@
             margin-top: 3rem;
             padding: 1rem 3.5rem;
             background: transparent;
-            color: white;
+            color: #d4af37;
             text-decoration: none;
             font-size: 0.9rem;
             letter-spacing: 0.25em;
             border-radius: 0;
             transition: all 0.4s ease;
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            border: 1px solid #d4af37;
             font-weight: 400;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .contact-btn:hover::before {
+            left: 100%;
         }
 
         .contact-btn:hover {
-            background: var(--azure);
-            border-color: var(--azure);
+            background: #d4af37;
+            border-color: #d4af37;
+            color: #2c3e50;
             transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Profile Card - New Theme */
+        .profile-card {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 0;
+            padding: 4rem 3rem;
+            margin: 3rem auto;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.5), transparent, rgba(212, 175, 55, 0.3));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .profile-card:hover::before {
+            opacity: 1;
+        }
+
+        .profile-photo {
+            width: 60%;
+            max-width: 600px;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            border-radius: 0;
+            object-fit: cover;
+            border: 2px solid #d4af37;
+            margin: 0 auto 2.5rem auto;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease;
+            display: block;
+        }
+
+        .profile-photo:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 50px rgba(212, 175, 55, 0.2);
+        }
+
+        .profile-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            letter-spacing: 0.15em;
+            font-weight: 500;
+        }
+
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .contact-list li {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(44, 62, 80, 0.15);
+            color: rgba(44, 62, 80, 0.85);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-list li:hover {
+            color: #d4af37;
+            transform: translateX(5px);
+        }
+
+        .contact-list li:last-child {
+            border-bottom: none;
+        }
+
+        .contact-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #d4af37;
+            font-size: 1.2rem;
+        }
+
+        .contact-list a {
+            color: rgba(44, 62, 80, 0.85);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-list a:hover {
+            color: #d4af37;
         }
 
         /* Footer */
@@ -809,82 +1063,84 @@
 
         /* Economic Indicators Section */
         .indicators {
-            background: var(--sand-light);
+            background: linear-gradient(135deg, #f8f6f3 0%, #f0ebe4 100%);
             position: relative;
         }
 
         .indicators-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 1.5rem;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
         }
 
         @media (max-width: 992px) {
             .indicators-grid {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (max-width: 576px) {
             .indicators-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr;
             }
         }
 
         .indicator-card {
             background: white;
-            padding: 2rem 1.5rem;
+            padding: 2.5rem 1.5rem;
             text-align: center;
-            border: 1px solid var(--sand);
+            border: none;
             position: relative;
             transition: all 0.4s ease;
             overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
         }
 
-        .indicator-card::after {
+        .indicator-card::before {
             content: '';
             position: absolute;
-            bottom: 0;
+            top: 0;
             left: 0;
             width: 100%;
             height: 4px;
-            background: linear-gradient(90deg, var(--azure), var(--azure-light));
+            background: linear-gradient(90deg, var(--charcoal), var(--charcoal-light));
             transform: scaleX(0);
             transform-origin: left;
             transition: transform 0.4s ease;
         }
 
-        .indicator-card:hover::after {
+        .indicator-card:hover::before {
             transform: scaleX(1);
         }
 
         .indicator-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(74, 144, 164, 0.15);
-            border-color: var(--azure-light);
+            box-shadow: 0 20px 40px rgba(44, 62, 80, 0.12);
         }
 
         .indicator-value {
             font-family: 'Playfair Display', serif;
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             font-weight: 600;
-            color: var(--azure);
-            margin-bottom: 0.5rem;
+            color: var(--charcoal);
+            margin-bottom: 0.3rem;
             line-height: 1;
         }
 
         .indicator-unit {
-            font-size: 1.2rem;
-            color: var(--azure);
+            font-size: 1rem;
+            color: var(--charcoal);
+            font-weight: 400;
         }
 
         .indicator-label {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: var(--text-light);
             margin-top: 0.8rem;
             font-weight: 400;
+            letter-spacing: 0.05em;
         }
 
         .indicator-card.animating .indicator-value {
@@ -899,6 +1155,14 @@
         /* Counter Animation */
         .counter {
             display: inline-block;
+        }
+
+        /* Parking Details */
+        .parking-detail {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 0.3rem;
+            font-weight: 300;
         }
     </style>
 </head>
@@ -943,39 +1207,56 @@
             <p class="section-desc">从概念到细节，全方位展示设计思考与实践成果</p>
         </div>
         <div class="gallery-grid">
-            <div class="gallery-item wide fade-in" onclick="openLightbox('portfolio-1.jpg')">
-                <img src="portfolio-1.jpg" alt="建筑效果图">
+            <!-- 排版1 - 全宽建筑效果图 -->
+            <div class="gallery-item wide fade-in" onclick="openLightbox('排版.jpg')">
+                <img src="排版.jpg" alt="建筑效果图">
                 <div class="gallery-overlay">
+                    <span class="project-number">01</span>
                     <h3>建筑效果图</h3>
                     <p>展示建筑与城市环境的融合关系</p>
+                    <span class="view-project">查看详情</span>
                 </div>
             </div>
-            <div class="gallery-item half fade-in" onclick="openLightbox('clipboard-2026-05-07T03-51-28-907Z-75187050.png')">
-                <img src="clipboard-2026-05-07T03-51-28-907Z-75187050.png" alt="功能分析与总平面图">
+            
+            <!-- 排版2 - 功能分析 -->
+            <div class="gallery-item tall fade-in" onclick="openLightbox('排版2.jpg')">
+                <img src="排版2.jpg" alt="功能分析与总平面图">
                 <div class="gallery-overlay">
+                    <span class="project-number">02</span>
                     <h3>功能分析与总平面图</h3>
                     <p>空间组织与场地关系分析</p>
+                    <span class="view-project">查看详情</span>
                 </div>
             </div>
-            <div class="gallery-item half fade-in" onclick="openLightbox('clipboard-2026-05-07T03-51-28-920Z-8b8d36fd.png')">
-                <img src="clipboard-2026-05-07T03-51-28-920Z-8b8d36fd.png" alt="结构分析">
+            <!-- 排版3 - 结构分析 -->
+            <div class="gallery-item tall fade-in" onclick="openLightbox('排版3.jpg')">
+                <img src="排版3.jpg" alt="结构分析">
                 <div class="gallery-overlay">
+                    <span class="project-number">03</span>
                     <h3>结构分析</h3>
                     <p>结构体系与幕墙节点设计</p>
+                    <span class="view-project">查看详情</span>
                 </div>
             </div>
-            <div class="gallery-item half fade-in" onclick="openLightbox('clipboard-2026-05-07T03-51-28-923Z-2510c266.png')">
-                <img src="clipboard-2026-05-07T03-51-28-923Z-2510c266.png" alt="设计细节">
+            
+            <!-- 排版4 - 设计细节 -->
+            <div class="gallery-item square fade-in" onclick="openLightbox('排版4.jpg')">
+                <img src="排版4.jpg" alt="设计细节">
                 <div class="gallery-overlay">
+                    <span class="project-number">04</span>
                     <h3>设计细节</h3>
                     <p>细部构造与材料表达</p>
+                    <span class="view-project">查看详情</span>
                 </div>
             </div>
-            <div class="gallery-item half fade-in" onclick="openLightbox('clipboard-2026-05-07T03-51-28-925Z-e548789f.png')">
-                <img src="clipboard-2026-05-07T03-51-28-925Z-e548789f.png" alt="平面图与剖面图">
+            <!-- 排版5 - 平面图与剖面图 -->
+            <div class="gallery-item square fade-in" onclick="openLightbox('排版5.jpg')">
+                <img src="排版5.jpg" alt="平面图与剖面图">
                 <div class="gallery-overlay">
+                    <span class="project-number">05</span>
                     <h3>平面图与剖面图</h3>
                     <p>空间布局与垂直组织</p>
+                    <span class="view-project">查看详情</span>
                 </div>
             </div>
         </div>
@@ -1058,7 +1339,7 @@
             </div>
         </div>
         <div class="highlight-image-section fade-in">
-            <img src="highlight-detail.png" alt="建筑结构细部">
+            <img src="liangdian.png" alt="建筑结构细部">
             <div class="highlight-image-overlay">
                 <h3>幕墙节点详图</h3>
                 <p>精工细作，匠心呈现每一处建筑细节</p>
@@ -1074,25 +1355,38 @@
             <p class="section-desc">专业规划，数据见证品质</p>
         </div>
         <div class="indicators-grid">
-            <div class="indicator-card fade-in" data-target="58600" data-suffix="㎡" data-decimals="0">
-                <div class="indicator-value"><span class="counter">0</span><span class="indicator-unit">㎡</span></div>
-                <div class="indicator-label">总占地面积</div>
-            </div>
-            <div class="indicator-card fade-in" data-target="238000" data-suffix="㎡" data-decimals="0">
+            <div class="indicator-card fade-in" data-target="38520" data-suffix="㎡" data-decimals="0">
                 <div class="indicator-value"><span class="counter">0</span><span class="indicator-unit">㎡</span></div>
                 <div class="indicator-label">总建筑面积</div>
             </div>
-            <div class="indicator-card fade-in" data-target="4.06" data-suffix="" data-decimals="2">
+            <div class="indicator-card fade-in" data-target="12723" data-suffix="㎡" data-decimals="0">
+                <div class="indicator-value"><span class="counter">0</span><span class="indicator-unit">㎡</span></div>
+                <div class="indicator-label">用地面积</div>
+            </div>
+            <div class="indicator-card fade-in" data-target="3137" data-suffix="㎡" data-decimals="0">
+                <div class="indicator-value"><span class="counter">0</span><span class="indicator-unit">㎡</span></div>
+                <div class="indicator-label">建筑占地面积</div>
+            </div>
+            <div class="indicator-card fade-in" data-target="21" data-suffix="层" data-decimals="0">
+                <div class="indicator-value"><span class="counter">0</span><span class="indicator-unit">层</span></div>
+                <div class="indicator-label">建筑层数</div>
+            </div>
+            <div class="indicator-card fade-in" data-target="24" data-suffix="%" data-decimals="0">
+                <div class="indicator-value"><span class="counter">0</span><span class="indicator-unit">%</span></div>
+                <div class="indicator-label">建筑密度</div>
+            </div>
+            <div class="indicator-card fade-in" data-target="3.05" data-suffix="" data-decimals="2">
                 <div class="indicator-value"><span class="counter">0</span></div>
                 <div class="indicator-label">容积率</div>
             </div>
-            <div class="indicator-card fade-in" data-target="35" data-suffix="%" data-decimals="0">
+            <div class="indicator-card fade-in" data-target="39" data-suffix="%" data-decimals="0">
                 <div class="indicator-value"><span class="counter">0</span><span class="indicator-unit">%</span></div>
                 <div class="indicator-label">绿化率</div>
             </div>
-            <div class="indicator-card fade-in" data-target="1856" data-suffix="个" data-decimals="0">
+            <div class="indicator-card fade-in" data-target="154" data-suffix="个" data-decimals="0">
                 <div class="indicator-value"><span class="counter">0</span><span class="indicator-unit">个</span></div>
                 <div class="indicator-label">机动车位</div>
+                <div class="parking-detail">地上24个 / 地下130个</div>
             </div>
         </div>
     </section>
@@ -1130,7 +1424,20 @@
             <h2 class="section-title">联系方式</h2>
             <p class="section-desc">期待与您交流建筑设计的更多可能</p>
         </div>
-        <a href="mailto:contact@archfolio.com" class="contact-btn fade-in">开始合作</a>
+        <div class="profile-card fade-in">
+            <img src="profolio.png" alt="个人照片" class="profile-photo">
+            <ul class="contact-list">
+                <li>
+                    <span class="contact-icon">✉</span>
+                    <a href="mailto:3146607203@qq.com">3146607203@qq.com</a>
+                </li>
+                <li>
+                    <span class="contact-icon">💬</span>
+                    <span>微信: Yizhigeduo</span>
+                </li>
+            </ul>
+        </div>
+        <a href="mailto:3146607203@qq.com" class="contact-btn fade-in">开始合作</a>
     </section>
 
     <!-- Footer -->
