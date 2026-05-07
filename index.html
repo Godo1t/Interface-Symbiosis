@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>界面共生 | 建筑设计作品集</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* 伊斯兰艺术博物馆风格配色 */
+            --sand: #e8e0d5;
+            --sand-light: #f5f2ed;
+            --sand-dark: #d4c9b8;
+            --azure: #4a90a4;
+            --azure-light: #7ab8c8;
+            --azure-dark: #2d5f6e;
+            --charcoal: #2c3e50;
+            --charcoal-light: #34495e;
+            --white: #ffffff;
+            --cream: #faf8f5;
+            --text: #2c3e50;
+            --text-light: #5a6c7d;
+            --accent: #4a90a4;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* Loading Animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--sand-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-text {
+            color: var(--azure);
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.4s ease;
+            background: transparent;
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 5%;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            letter-spacing: 0.1em;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--charcoal);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--azure);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--azure);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: var(--sand-light);
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: 
+                linear-gradient(rgba(74, 144, 164, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(74, 144, 164, 0.08) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            color: var(--charcoal);
+            padding: 2rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            letter-spacing: 0.5em;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.5s forwards;
+            color: var(--azure);
+            font-weight: 400;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.8s forwards;
+            background: linear-gradient(135deg, var(--charcoal) 0%, var(--charcoal-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.1s forwards;
+            color: var(--text-light);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--azure);
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.5s forwards;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .scroll-indicator:hover {
+            transform: translateX(-50%) translateY(5px);
+        }
+
+        .scroll-indicator span {
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+        }
+
+        .scroll-arrow {
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--azure);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bounce 2s infinite;
+            color: var(--azure);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Section Styles */
+        section {
+            padding: 8rem 5%;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .section-number {
+            font-size: 0.9rem;
+            letter-spacing: 0.3em;
+            color: var(--azure);
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 400;
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .section-desc {
+            max-width: 700px;
+            margin: 0 auto;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Project Overview */
+        .overview {
+            background: white;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .overview-card {
+            padding: 2.5rem;
+            background: var(--sand-light);
+            border-radius: 0;
+            transition: all 0.4s ease;
+            border: 1px solid var(--sand);
+            position: relative;
+        }
+
+        .overview-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--azure);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .overview-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .overview-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(74, 144, 164, 0.1);
+            border-color: var(--azure-light);
+        }
+
+        .overview-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--charcoal);
+            font-weight: 500;
+        }
+
+        .overview-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        /* Gallery Section */
+        .gallery {
+            background: var(--sand-light);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.5s ease;
+            background: var(--white);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        .gallery-item.wide {
+            grid-column: span 12;
+        }
+
+        .gallery-item.half {
+            grid-column: span 6;
+        }
+
+        .gallery-item.third {
+            grid-column: span 4;
+        }
+
+        @media (max-width: 768px) {
+            .gallery-item.half,
+            .gallery-item.third {
+                grid-column: span 12;
+            }
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(transparent, rgba(44, 62, 80, 0.9));
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        .gallery-overlay h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .gallery-overlay p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(44, 62, 80, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+
+        .lightbox img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 0;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .lightbox-close:hover {
+            background: var(--azure);
+            border-color: var(--azure);
+        }
+
+        .lightbox-close::before,
+        .lightbox-close::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 1px;
+            background: white;
+            transition: background 0.3s ease;
+        }
+
+        .lightbox-close::before {
+            transform: rotate(45deg);
+        }
+
+        .lightbox-close::after {
+            transform: rotate(-45deg);
+        }
+
+        /* Features Section */
+        .features {
+            background: white;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: transparent;
+            border: 1px solid var(--azure);
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--azure);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover .feature-icon {
+            background: var(--azure);
+            color: white;
+        }
+
+        .feature-item h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--charcoal);
+        }
+
+        .feature-item p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        /* Contact Section */
+        .contact {
+            background: var(--charcoal);
+            color: white;
+            text-align: center;
+        }
+
+        .contact .section-title {
+            color: white;
+        }
+
+        .contact .section-desc {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .contact-btn {
+            display: inline-block;
+            margin-top: 3rem;
+            padding: 1rem 3.5rem;
+            background: transparent;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 0.25em;
+            border-radius: 0;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            font-weight: 400;
+        }
+
+        .contact-btn:hover {
+            background: var(--azure);
+            border-color: var(--azure);
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--charcoal-light);
+            color: white;
+            padding: 3rem 5%;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em;
+        }
+
+        .footer-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 2rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--azure-light);
+        }
+
+        .copyright {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Highlights Section - Light Theme */
+        .highlights {
+            background: white;
+            position: relative;
+        }
+
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 992px) {
+            .highlights-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .highlights-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .highlight-card {
+            background: var(--sand-light);
+            border: 1px solid var(--sand);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .highlight-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .highlight-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--azure), var(--azure-light));
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .highlight-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .highlight-card:hover {
+            background: var(--white);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(74, 144, 164, 0.12);
+            border-color: var(--azure-light);
+        }
+
+        .highlight-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--azure);
+            transition: transform 0.5s ease;
+        }
+
+        .highlight-card:hover .highlight-icon {
+            transform: scale(1.2);
+        }
+
+        .highlight-card h3 {
+            font-size: 1.3rem;
+            color: var(--charcoal);
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+        }
+
+        .highlight-card p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Highlight Image Section */
+        .highlight-image-section {
+            margin-top: 4rem;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+        }
+
+        .highlight-image-section img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.8s ease;
+        }
+
+        .highlight-image-section:hover img {
+            transform: scale(1.03);
+        }
+
+        .highlight-image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 3rem;
+            background: linear-gradient(transparent, rgba(44, 62, 80, 0.85));
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+        }
+
+        .highlight-image-section:hover .highlight-image-overlay {
+            transform: translateY(0);
+        }
+
+        .highlight-image-overlay h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .highlight-image-overlay p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Economic Indicators Section */
+        .indicators {
+            background: var(--sand-light);
+            position: relative;
+        }
+
+        .indicators-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 992px) {
+            .indicators-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .indicators-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .indicator-card {
+            background: white;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border: 1px solid var(--sand);
+            position: relative;
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        .indicator-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--azure), var(--azure-light));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .indicator-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .indicator-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(74, 144, 164, 0.15);
+            border-color: var(--azure-light);
+        }
+
+        .indicator-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 600;
+            color: var(--azure);
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+
+        .indicator-unit {
+            font-size: 1.2rem;
+            color: var(--azure);
+        }
+
+        .indicator-label {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-top: 0.8rem;
+            font-weight: 400;
+        }
+
+        .indicator-card.animating .indicator-value {
+            animation: countPulse 0.3s ease;
+        }
+
+        @keyframes countPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Counter Animation */
+        .counter {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader -->
+    <div class="loader">
+        <div class="loader-text">界面共生</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="#" class="logo">ARCHFOLIO</a>
+        <ul class="nav-links">
+            <li><a href="#gallery">作品集</a></li>
+            <li><a href="#overview">项目概览</a></li>
+            <li><a href="#highlights">项目亮点</a></li>
+            <li><a href="#indicators">技术指标</a></li>
+            <li><a href="#features">设计特点</a></li>
+            <li><a href="#contact">联系方式</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <p class="hero-subtitle">建筑 · 空间 · 共生</p>
+            <h1 class="hero-title">界面共生</h1>
+            <p class="hero-desc">INTERFACE SYMBIOSIS<br>城市空间的多维融合与建筑立面的创新性探索</p>
+        </div>
+        <div class="scroll-indicator" onclick="document.getElementById('gallery').scrollIntoView({behavior: 'smooth'})">
+            <span>探索</span>
+            <div class="scroll-arrow">↓</div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery">
+        <div class="section-header fade-in">
+            <p class="section-number">01</p>
+            <h2 class="section-title">作品集</h2>
+            <p class="section-desc">从概念到细节，全方位展示设计思考与实践成果</p>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item wide fade-in" onclick="openLightbox('portfolio-1.jpg')">
+                <img src="portfolio-1.jpg" alt="建筑效果图">
+                <div class="gallery-overlay">
+                    <h3>建筑效果图</h3>
+                    <p>展示建筑与城市环境的融合关系</p>
+                </div>
+            </div>
+            <div class="gallery-item half fade-in" onclick="openLightbox('clipboard-2026-05-07T03-51-28-907Z-75187050.png')">
+                <img src="clipboard-2026-05-07T03-51-28-907Z-75187050.png" alt="功能分析与总平面图">
+                <div class="gallery-overlay">
+                    <h3>功能分析与总平面图</h3>
+                    <p>空间组织与场地关系分析</p>
+                </div>
+            </div>
+            <div class="gallery-item half fade-in" onclick="openLightbox('clipboard-2026-05-07T03-51-28-920Z-8b8d36fd.png')">
+                <img src="clipboard-2026-05-07T03-51-28-920Z-8b8d36fd.png" alt="结构分析">
+                <div class="gallery-overlay">
+                    <h3>结构分析</h3>
+                    <p>结构体系与幕墙节点设计</p>
+                </div>
+            </div>
+            <div class="gallery-item half fade-in" onclick="openLightbox('clipboard-2026-05-07T03-51-28-923Z-2510c266.png')">
+                <img src="clipboard-2026-05-07T03-51-28-923Z-2510c266.png" alt="设计细节">
+                <div class="gallery-overlay">
+                    <h3>设计细节</h3>
+                    <p>细部构造与材料表达</p>
+                </div>
+            </div>
+            <div class="gallery-item half fade-in" onclick="openLightbox('clipboard-2026-05-07T03-51-28-925Z-e548789f.png')">
+                <img src="clipboard-2026-05-07T03-51-28-925Z-e548789f.png" alt="平面图与剖面图">
+                <div class="gallery-overlay">
+                    <h3>平面图与剖面图</h3>
+                    <p>空间布局与垂直组织</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview" class="overview">
+        <div class="section-header fade-in">
+            <p class="section-number">02</p>
+            <h2 class="section-title">项目概览</h2>
+            <p class="section-desc">本项目深入探讨建筑与城市界面的关系，通过创新性的空间组织和立面设计，实现建筑与环境的和谐共生。</p>
+        </div>
+        <div class="overview-grid">
+            <div class="overview-card fade-in">
+                <h3>设计理念</h3>
+                <p>界面共生强调建筑与城市的对话，通过多层次的空间组织，创造开放与私密、静态与动态并存的复合场所。</p>
+            </div>
+            <div class="overview-card fade-in">
+                <h3>功能分析</h3>
+                <p>项目包含商业、办公、公共空间等多元功能，通过垂直分层和水平渗透，实现功能的高效整合与互动。</p>
+            </div>
+            <div class="overview-card fade-in">
+                <h3>结构设计</h3>
+                <p>采用核心筒结构体系，结合悬挑与吊挂技术，实现大跨度无柱空间，为功能灵活性提供结构支撑。</p>
+            </div>
+            <div class="overview-card fade-in">
+                <h3>材料与构造</h3>
+                <p>玻璃幕墙与金属框架的精密配合，结合遮阳系统与绿色技术，实现美学与性能的有机统一。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Highlights Section -->
+    <section id="highlights" class="highlights">
+        <div class="section-header fade-in">
+            <p class="section-number">03</p>
+            <h2 class="section-title">项目亮点</h2>
+            <p class="section-desc">以技术创新与设计美学，打造城市地标级建筑精品</p>
+        </div>
+        <div class="highlights-grid">
+            <div class="highlight-card" data-delay="0">
+                <div class="highlight-icon">◈</div>
+                <h3>结构体系</h3>
+                <p>核心筒-框架结构体系，结合钢结构与混凝土核心筒，确保高层稳定性与抗震性能</p>
+            </div>
+            <div class="highlight-card" data-delay="100">
+                <div class="highlight-icon">◇</div>
+                <h3>玻璃幕墙</h3>
+                <p>双层呼吸式玻璃幕墙系统，LOW-E镀膜玻璃，有效隔热降噪，透光率高达70%</p>
+            </div>
+            <div class="highlight-card" data-delay="200">
+                <div class="highlight-icon">◉</div>
+                <h3>基础节点</h3>
+                <p>桩筏联合基础设计，超大承载力桩基，持力层深入稳定岩层，确保结构安全</p>
+            </div>
+            <div class="highlight-card" data-delay="300">
+                <div class="highlight-icon">⬡</div>
+                <h3>立面系统</h3>
+                <p>单元式幕墙与石材装饰线条相结合，虚实对比，营造现代典雅的城市天际线</p>
+            </div>
+            <div class="highlight-card" data-delay="400">
+                <div class="highlight-icon">△</div>
+                <h3>遮阳系统</h3>
+                <p>可调节水平遮阳百叶，根据日照角度自动调节，兼顾采光与遮阳双重需求</p>
+            </div>
+            <div class="highlight-card" data-delay="500">
+                <div class="highlight-icon">□</div>
+                <h3>绿色节能</h3>
+                <p>雨水回收系统、光伏发电、屋顶绿化等环保技术，降低建筑能耗，提升可持续性</p>
+            </div>
+            <div class="highlight-card" data-delay="600">
+                <div class="highlight-icon">⬢</div>
+                <h3>智能楼宇</h3>
+                <p>BMS楼宇自控系统，集成空调、照明、安防一体化管理，提升运营效率</p>
+            </div>
+            <div class="highlight-card" data-delay="700">
+                <div class="highlight-icon">◎</div>
+                <h3>消防设计</h3>
+                <p>超高层防火分区设计，自动喷淋系统+智能烟感，构建全方位安全防护体系</p>
+            </div>
+        </div>
+        <div class="highlight-image-section fade-in">
+            <img src="highlight-detail.png" alt="建筑结构细部">
+            <div class="highlight-image-overlay">
+                <h3>幕墙节点详图</h3>
+                <p>精工细作，匠心呈现每一处建筑细节</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Economic Indicators Section -->
+    <section id="indicators" class="indicators">
+        <div class="section-header fade-in">
+            <p class="section-number">04</p>
+            <h2 class="section-title">经济技术指标</h2>
+            <p class="section-desc">专业规划，数据见证品质</p>
+        </div>
+        <div class="indicators-grid">
+            <div class="indicator-card fade-in" data-target="58600" data-suffix="㎡" data-decimals="0">
+                <div class="indicator-value"><span class="counter">0</span><span class="indicator-unit">㎡</span></div>
+                <div class="indicator-label">总占地面积</div>
+            </div>
+            <div class="indicator-card fade-in" data-target="238000" data-suffix="㎡" data-decimals="0">
+                <div class="indicator-value"><span class="counter">0</span><span class="indicator-unit">㎡</span></div>
+                <div class="indicator-label">总建筑面积</div>
+            </div>
+            <div class="indicator-card fade-in" data-target="4.06" data-suffix="" data-decimals="2">
+                <div class="indicator-value"><span class="counter">0</span></div>
+                <div class="indicator-label">容积率</div>
+            </div>
+            <div class="indicator-card fade-in" data-target="35" data-suffix="%" data-decimals="0">
+                <div class="indicator-value"><span class="counter">0</span><span class="indicator-unit">%</span></div>
+                <div class="indicator-label">绿化率</div>
+            </div>
+            <div class="indicator-card fade-in" data-target="1856" data-suffix="个" data-decimals="0">
+                <div class="indicator-value"><span class="counter">0</span><span class="indicator-unit">个</span></div>
+                <div class="indicator-label">机动车位</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="section-header fade-in">
+            <p class="section-number">05</p>
+            <h2 class="section-title">设计特点</h2>
+            <p class="section-desc">探索建筑设计中的关键创新点</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-item fade-in">
+                <div class="feature-icon">◈</div>
+                <h3>界面组织</h3>
+                <p>通过建筑立面的层次化处理，创造丰富的城市界面，实现建筑与街道的互动对话。</p>
+            </div>
+            <div class="feature-item fade-in">
+                <div class="feature-icon">◉</div>
+                <h3>空间渗透</h3>
+                <p>打破传统边界，引入垂直绿化与中庭空间，实现自然与建筑的有机融合。</p>
+            </div>
+            <div class="feature-item fade-in">
+                <div class="feature-icon">◇</div>
+                <h3>结构创新</h3>
+                <p>采用核心筒与悬挑结构相结合，实现大跨度无柱空间，提升使用灵活性。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="section-header fade-in">
+            <p class="section-number">06</p>
+            <h2 class="section-title">联系方式</h2>
+            <p class="section-desc">期待与您交流建筑设计的更多可能</p>
+        </div>
+        <a href="mailto:contact@archfolio.com" class="contact-btn fade-in">开始合作</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">界面共生</div>
+            <p class="footer-text">建筑设计的探索与表达</p>
+            <div class="footer-links">
+                <a href="#gallery">作品集</a>
+                <a href="#overview">项目概览</a>
+                <a href="#highlights">项目亮点</a>
+                <a href="#indicators">技术指标</a>
+                <a href="#features">设计特点</a>
+                <a href="#contact">联系方式</a>
+            </div>
+            <p class="copyright">© 2026 界面共生 | 建筑设计作品集. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-close" onclick="closeLightbox()"></div>
+        <div class="lightbox-content">
+            <img src="" alt="Lightbox Image" id="lightbox-img">
+        </div>
+    </div>
+
+    <script>
+        // Page Loader
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.querySelector('.loader').classList.add('hidden');
+            }, 1500);
+        });
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Fade In Animation on Scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Highlight Cards Staggered Animation
+        const highlightObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const delay = entry.target.getAttribute('data-delay') || 0;
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, delay);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.highlight-card').forEach(el => {
+            highlightObserver.observe(el);
+        });
+
+        // Animated Counter
+        function animateCounter(element, target, decimals = 0) {
+            const duration = 2000;
+            const start = 0;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function for smooth animation
+                const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                const current = start + (target - start) * easeOutQuart;
+                
+                if (decimals > 0) {
+                    element.textContent = current.toFixed(decimals);
+                } else {
+                    element.textContent = Math.floor(current).toLocaleString();
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        // Start counter animation when indicators section is visible
+        const indicatorObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const cards = entry.target.querySelectorAll('.indicator-card');
+                    cards.forEach((card, index) => {
+                        setTimeout(() => {
+                            const counter = card.querySelector('.counter');
+                            const target = parseFloat(card.getAttribute('data-target'));
+                            const decimals = parseInt(card.getAttribute('data-decimals')) || 0;
+                            animateCounter(counter, target, decimals);
+                            card.classList.add('animating');
+                        }, index * 150);
+                    });
+                    indicatorObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.indicators-grid').forEach(el => {
+            indicatorObserver.observe(el);
+        });
+
+        // Lightbox Functions
+        function openLightbox(imageName) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = imageName;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close lightbox on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+
+        // Close lightbox on background click
+        document.getElementById('lightbox').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLightbox();
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
